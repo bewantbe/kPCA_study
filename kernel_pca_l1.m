@@ -4,7 +4,7 @@
 addpath('/home/xyy/matcode/eigen_study/');
 
 % Select kernel function
-switch 1
+switch 3
 case 1
   ker = @(x, y) (x' * y + 1).^2;
   % this kernel has max dimension 6, since only 6 terms in second order poly.
@@ -20,12 +20,12 @@ case 2
   ker = @(x, y) (x' * y + 1).^3;
   % like wise, this dim 10
 case 3
-  sigma = 1;
+  sigma = 0.1;  % 0.1=interesting gaussian, 5=no much change to the original space,but still seperable in pc3.
   ker = @(x, y) exp(-sum((permute(x, [2,3,1]) - permute(y, [3,2,1])).^2, 3) / (2*sigma^2));
 end
 
 % Generate test data
-switch 1
+switch 2
 case 1
 	% circ
 	n1 = 100;
@@ -47,7 +47,7 @@ plot(p_d(1,:), p_d(2,:), '.');
 % Get Gramian matrix and its eigen decomposition
 G = ker(p_d, p_d);
 % center the data in feature space
-%G = G - ones(1,n)/n * G - G * ones(n,1)/n + sum(G(:))/n/n;
+G = G - ones(1,n)/n * G - G * ones(n,1)/n + sum(G(:))/n/n;
 [evecs, evals] = eigh((G+G')/2);
 
 % remove zero eigen space
@@ -75,6 +75,26 @@ plot(pc(1,:), pc(2,:), '.o');
 xlabel('pca1');
 ylabel('pca2');
 
+% PCA plot 3D
+figure(13);
+plot3(pc(1,:), pc(2,:), pc(3,:), '.o');
+xlabel('pca1');
+ylabel('pca2');
+ylabel('pca3');
+
+% eigen component plot. i.e. rough clusting that belong to a eig
+figure(15);
+plot(1:n, evecs(:,1), 1:n, evecs(:,2), 1:n, evecs(:,2), '-o');
+xlabel('sample index');
+
+idp1 = evecs(:,1) > 1/sqrt(evals(1))/n;
+idp2 = evecs(:,2) > 1/sqrt(evals(2))/n;
+
+figure(17);
+plot(p_d(1,:), p_d(2,:), '.g', ...
+     p_d(1,idp1), p_d(2,idp1), 'o', ...
+     p_d(1,idp2), p_d(2,idp2), 'o');
+
 
 if 0
 
@@ -83,6 +103,7 @@ if 0
 	for j = 1:size(p_d,2)
 		Y(:,j) = f_feature(p_d(:,j));
 	end
+	Y = Y - mean(Y,2);
 	[yevec, yeval] = eigh(Y*Y'/n);  % reference answer
 	V = Y * evecs;                  % from algo
 	% we should have V == yevec in the sense of eigen space
