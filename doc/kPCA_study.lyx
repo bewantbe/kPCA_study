@@ -87,27 +87,287 @@ Basics
 
 \begin_layout Standard
 Data: 
-\begin_inset Formula $\left\{ x_{j}\right\} _{j=1}^{n}$
-\end_inset
-
-, map to hypothetical/postulated space 
-\begin_inset Formula $\left\{ y_{j}\right\} _{j=1}^{n}$
+\begin_inset Formula $\left\{ x_{j}\right\} _{j=1}^{m}$
 \end_inset
 
 , 
-\begin_inset Formula $y_{j}=\phi(x_{j})$
+\begin_inset Formula $x_{j}\in\mathbb{R}^{n}$
+\end_inset
+
+, map to hypothetical/postulated space 
+\begin_inset Formula $\left\{ y_{j}\right\} _{j=1}^{m}$
+\end_inset
+
+, 
+\begin_inset Formula $y_{j}=\phi(x_{j})\in F$
 \end_inset
 
 .
- Define
+ We want to perform PCA in 
+\begin_inset Formula $F$
+\end_inset
+
+, i.e.
+ for 
+\begin_inset Formula $\left\{ y_{j}\right\} $
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Procedure
+\end_layout
+
+\begin_layout Standard
+Define
 \begin_inset Formula 
 \begin{equation}
-G=\left[\left\langle \phi(x_{i}),\phi(x_{j})\right\rangle \right]_{ij=1}^{n}
+G=\left[\left\langle \Phi(x_{j}),\Phi(x_{k})\right\rangle \right]_{j,k=1}^{m}=\left[\Phi(x_{j})^{T}\Phi(x_{k})\right]_{j,k=1}^{m},
+\end{equation}
+
+\end_inset
+
+then 
+\begin_inset Formula $G$
+\end_inset
+
+ has eigenvalue decomposition
+\begin_inset Formula 
+\begin{equation}
+G\boldsymbol{a}^{(k)}=\lambda_{k}\boldsymbol{a}^{(k)},\quad k=1,\ldots,m
 \end{equation}
 
 \end_inset
 
 
+\begin_inset Formula 
+\[
+\boldsymbol{a}^{(k)}=\begin{bmatrix}a_{1}^{(k)} & a_{2}^{(k)} & \cdots & a_{m}^{(k)}\end{bmatrix}
+\]
+
+\end_inset
+
+which gives eigenvalue decomposition of covariance matrix 
+\begin_inset Formula $C$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+C=\frac{1}{m}\sum_{j=1}^{m}\Phi(x_{j})\Phi^{T}(x_{j}),
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+C\boldsymbol{v}^{(k)}=\frac{\lambda_{k}}{m}\boldsymbol{v}^{(k)},\label{eq:C-eig}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\boldsymbol{v}^{(k)}=\sum_{j=1}^{m}a_{j}^{(k)}\Phi(x_{j}).\label{eq:v-repr-a}
+\end{equation}
+
+\end_inset
+
+The 
+\begin_inset Formula $\boldsymbol{v}^{(k)}$
+\end_inset
+
+ is the PCA vector in 
+\begin_inset Formula $F$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The above procedure works because:
+\end_layout
+
+\begin_layout Itemize
+The eigenvectors 
+\begin_inset Formula $\boldsymbol{v}^{(k)}$
+\end_inset
+
+ 
+\begin_inset Formula $(k=1,\ldots,m)$
+\end_inset
+
+ in Eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:C-eig"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ has representation in the form of Eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:v-repr-a"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, since 
+\begin_inset Formula $C$
+\end_inset
+
+ act as a projection:
+\begin_inset Formula 
+\[
+C\boldsymbol{v}^{(k)}=\frac{1}{m}\sum_{j=1}^{m}\Phi(x_{j})\left(\Phi^{T}(x_{j})\boldsymbol{v}^{(k)}\right)\in\mathrm{span}\left\{ \Phi(x_{j})\right\} _{j=1}^{m}.
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+From the representation Eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:v-repr-a"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, together with the trick that left multiply 
+\begin_inset Formula $\Phi^{T}(x_{l})$
+\end_inset
+
+ to Eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:C-eig"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\Phi^{T}(x_{l})C\boldsymbol{v}^{(k)}=\frac{\lambda_{k}}{m}\Phi^{T}(x_{l})\boldsymbol{v}^{(k)},\quad l=1,\ldots,m
+\]
+
+\end_inset
+
+we reach an eigenvalue problem
+\begin_inset Formula 
+\[
+\frac{1}{m}G^{2}\boldsymbol{a}^{(k)}=\frac{\lambda_{k}}{m}G\boldsymbol{a}^{(k)},
+\]
+
+\end_inset
+
+which is can be solved by
+\begin_inset Formula 
+\[
+G\boldsymbol{a}^{(k)}=\lambda_{k}\boldsymbol{a}^{(k)},
+\]
+
+\end_inset
+
+plus the null space of 
+\begin_inset Formula $G$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Paragraph
+Normalization of the feature vector.
+\end_layout
+
+\begin_layout Standard
+Procedure
+\begin_inset Formula 
+\[
+\left\Vert \boldsymbol{v}^{(k)}\right\Vert _{2}=1\quad\Rightarrow\quad\left(\boldsymbol{a}^{(k)}\right)^{T}G\boldsymbol{a}^{(k)}=1\quad\Rightarrow\quad\left\Vert \boldsymbol{a}^{(k)}\right\Vert _{2}\lambda_{k}=1
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Centrering data.
+\end_layout
+
+\begin_layout Standard
+Procedure
+\end_layout
+
+\begin_layout Standard
+Define
+\begin_inset Formula 
+\begin{equation}
+\phi_{0}=\frac{1}{m}\sum_{j=1}^{m}\Phi(x_{j})
+\end{equation}
+
+\end_inset
+
+Then
+\end_layout
+
+\begin_layout Standard
+Get projection.
+\end_layout
+
+\begin_layout Standard
+Get new data point projection.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "kpca"
+literal "false"
+
+\end_inset
+
+Schölkopf, Bernhard, Alexander Smola, and Klaus-Robert Müller.
+ Letter.
+ “Nonlinear Component Analysis as a Kernel Eigenvalue Problem.” Letter, March
+ 13, 2006.
+ 238 Main St., Suite 500, Cambridge, MA 02142-1046 USA journals-info@mit.edu.
+ https://doi.org/10.1162/089976698300017467.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "rkhs-embed"
+literal "false"
+
+\end_inset
+
+Muandet, Krikamol, Kenji Fukumizu, Bharath Sriperumbudur, and Bernhard Schölkopf.
+ “Kernel Mean Embedding of Distributions: A Review and Beyond.” Foundations
+ and Trends® in Machine Learning 10, no.
+ 1–2 (2017): 1–141.
+ https://doi.org/10.1561/2200000060.
 \end_layout
 
 \end_body
